@@ -1,6 +1,6 @@
 # AIOTP Browser
 
-![Static Badge](https://img.shields.io/badge/%E5%90%9B%E6%84%BF%E9%AB%98%E7%9B%9B-AIOTP?logo=Python&logoColor=%23efefef&label=Apollo&color=%23d9b766)
+![Static Badge](https://img.shields.io/badge/%E5%90%9B%E6%84%BF%E9%AB%98%E7%9B%9B-AIOTP?logo=Python&logoColor=%23efefef&label=AIOTP&color=%23d9b766)
 
 <code><img height="25" src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg'></code>
 <code><img height="25" src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg'></code>
