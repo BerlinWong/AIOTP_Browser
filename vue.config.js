@@ -38,7 +38,7 @@ module.exports = {
   lintOnSave: true,
   devServer: {
     publicPath, // 和 publicPath 保持一致
-    port: 3000,
+    port: 3888,
     proxy: {
       '/': {
         target: 'http://127.0.0.1:5988',

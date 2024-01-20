@@ -17,6 +17,10 @@ import VCharts from 'v-charts'
 // import VueSocketIO from 'vue-socket.io'
 // import SocketIO from 'socket.io-client'
 
+import echarts from 'echarts'
+
+// vue全局注入echarts
+Vue.prototype.$echarts = echarts
 // 核心插件
 Vue.prototype.axios = axios
 Vue.use(d2Admin)
@@ -50,7 +54,7 @@ new Vue({
   store,
   i18n,
   render: h => h(App),
-  created() {
+  created () {
     // 处理路由 得到每一级的路由设置
     this.$store.commit('d2admin/page/init', frameInRoutes)
     // 设置顶栏菜单
@@ -62,7 +66,7 @@ new Vue({
     // 初始化菜单搜索功能
     this.$store.commit('d2admin/search/init', menuHeader)
   },
-  mounted() {
+  mounted () {
     // 展示系统信息
     this.$store.commit('d2admin/releases/versionShow')
     // 用户登录后从数据库加载一系列的设置

@@ -5,7 +5,7 @@ import { uniqueId } from 'lodash'
  * @description https://github.com/d2-projects/d2-admin/issues/209
  * @param {Array} menu 原始的菜单数据
  */
-function supplementPath(menu) {
+function supplementPath (menu) {
   return menu.map(e => ({
     ...e,
     path: e.path || uniqueId('d2-menu-empty-'),
@@ -16,7 +16,21 @@ function supplementPath(menu) {
 }
 
 export const menuHeader = supplementPath([
-  { path: '/index', title: '首页', iconSvg: 'shouye' }
+  {
+    path: '/index',
+    title: '首页',
+    iconSvg: 'shouye'
+  },
+  {
+    path: '/graph',
+    title: '图线分析',
+    iconSvg: 'tuxingfenxi'
+  },
+  {
+    path: '/graph_v2',
+    title: '图线分析V2',
+    iconSvg: 'tuxingfenxi'
+  }
   // ,
   // {
   //   title: '参数池',
@@ -32,7 +46,21 @@ export const menuHeader = supplementPath([
 ])
 
 export const menuAside = supplementPath([
-  { path: '/index', title: '首页', iconSvg: 'shouye' }
+  {
+    path: '/index',
+    title: '首页',
+    iconSvg: 'shouye'
+  },
+  {
+    path: '/graph',
+    title: '图线分析',
+    iconSvg: 'tuxingfenxi'
+  },
+  {
+    path: '/graph_v2',
+    title: '图线分析 sV2',
+    iconSvg: 'tuxingfenxi'
+  }
   // ,
   // {
   //   title: '参数池',

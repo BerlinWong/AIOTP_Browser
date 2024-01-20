@@ -21,6 +21,25 @@ const frameIn = [
         },
         component: _import('system/index')
       },
+      // 图线分析
+      {
+        path: 'graph',
+        name: 'graph',
+        component: () => import('@/pages/graph-line-analysis/native_echarts'),
+        meta: {
+          auth: true,
+          title: '图线分析'
+        }
+      },
+      {
+        path: 'graph_v2',
+        name: 'graph_v2',
+        component: () => import('@/pages/graph-line-analysis/native_echarts_v2'),
+        meta: {
+          auth: true,
+          title: '图线分析 V2'
+        }
+      },
 
       // 演示页面
       {
