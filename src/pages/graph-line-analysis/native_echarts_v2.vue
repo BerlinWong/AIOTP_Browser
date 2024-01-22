@@ -35,6 +35,8 @@
           </el-date-picker>
         </div>
         <el-button style="margin-left: 25px" type="primary" @click="initCharts">渲染</el-button>
+        <!--        <el-button style="margin-left: 25px" type="primary" @click="allSelect">展示全部图例</el-button>-->
+        <!--        <el-button style="margin-left: 25px" type="primary" @click="clearSelect">清空所有选中</el-button>-->
       </div>
     </template>
   </d2-container>
@@ -52,7 +54,7 @@ export default {
       rows: [],
       groupedList: [],
       default_show: {},
-      selectedTab: {}
+      selectedTab: []
     }
   },
   // mounted () {
@@ -65,49 +67,18 @@ export default {
     options () {
       // 假设这里有多个折线的数据，percentChanges 是每个折线的涨跌幅数组
       const seriesData = this.rows
+      const groupedList = this.groupedList
       const contrastColors = [
-        '#FF0000', '#00FF00', '#0000FF', '#ffb700', '#FF00FF', '#00FFFF', '#FFA500', '#800080', '#008000', '#000080',
-        '#FF4500', '#32CD32', '#0000CD', '#4800ff', '#800000', '#00CED1', '#BA55D3', '#808000', '#708090', '#8A2BE2',
-        '#FF6347', '#40E0D0', '#EE82EE', '#F08080', '#6A5ACD', '#2E8B57', '#8B0000', '#9932CC', '#8B4513', '#20B2AA',
-        '#FF8C00', '#9400D3', '#8B008B', '#008B8B', '#B8860B', '#556B2F', '#FF4500', '#ADFF2F', '#4B0082', '#FF00FF',
-        '#7CFC00', '#8B008B', '#2E8B57', '#8A2BE2', '#FF6347', '#32CD32', '#8B4513', '#008080', '#48D1CC', '#CD5C5C',
-        '#4169E1', '#32CD32', '#FFD700', '#9932CC', '#DC143C', '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A',
-        '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000',
-        '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8', '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F',
-        '#800080', '#008B8B', '#FF6347', '#3CB371', '#7B68EE', '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1',
-        '#32CD32', '#FFD700', '#9932CC', '#DC143C', '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A',
-        '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6',
-        '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8', '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080',
-        '#008B8B', '#FF6347', '#3CB371', '#7B68EE', '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32',
-        '#FFD700', '#9932CC', '#DC143C', '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB',
-        '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F',
-        '#FF4500', '#00FFFF', '#D8BFD8', '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B',
-        '#FF6347', '#3CB371', '#7B68EE', '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700',
-        '#9932CC', '#DC143C', '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00',
-        '#8A2BE2', '#7FFF00', '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500',
-        '#00FFFF', '#D8BFD8', '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B', '#FF6347',
-        '#3CB371', '#7B68EE', '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700', '#9932CC',
-        '#DC143C', '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2',
-        '#7FFF00', '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF',
-        '#D8BFD8', '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B', '#FF6347', '#3CB371',
-        '#7B68EE', '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700', '#9932CC', '#DC143C',
-        '#556B2F', '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00',
-        '#FA8072', '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8',
-        '#9400D3', '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B', '#FF6347', '#3CB371', '#7B68EE',
-        '#FF1493', '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700', '#9932CC', '#DC143C', '#556B2F',
-        '#8B4513', '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072',
-        '#008080', '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8', '#9400D3',
-        '#00CED1', '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B', '#FF6347', '#3CB371', '#7B68EE', '#FF1493',
-        '#696969', '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700', '#9932CC', '#DC143C', '#556B2F', '#8B4513',
-        '#4682B4', '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072', '#008080',
-        '#48D1CC', '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8', '#9400D3', '#00CED1',
-        '#8B0000', '#1E90FF', '#8FBC8F', '#800080', '#008B8B', '#FF6347', '#3CB371', '#7B68EE', '#FF1493', '#696969',
-        '#8B008B', '#CD5C5C', '#4169E1', '#32CD32', '#FFD700', '#9932CC', '#DC143C', '#556B2F', '#8B4513', '#4682B4',
-        '#6A5ACD', '#FFA07A', '#00FA9A', '#9370DB', '#00FF00', '#8A2BE2', '#7FFF00', '#FA8072', '#008080', '#48D1CC',
-        '#00008B', '#808000', '#B0E0E6', '#2F4F4F', '#FF4500', '#00FFFF', '#D8BFD8']
+        '#ffae4b', '#ff6050', '#f14d91', '#400a4f', '#ab83f0', '#6889f5', '#57a4ff', '#45c8ff', '#4bdfcb', '#62f7aa',
+        '#97f570', '#d2ec55', '#ffe845', '#ffb52b', '#ff7a4b', '#ff546a', '#f159b4', '#d05ef6', '#b18df4', '#748ef5',
+        '#699cfb', '#5ca7ff', '#58b5ff', '#51c6d5', '#4ad9b4', '#3cf48b', '#7cff56', '#b6f63b', '#f5e441', '#ffd73b',
+        '#ff9f54', '#ff6f70', '#f166bb', '#d86bf8', '#bb9cf7', '#7a8df7', '#799afb', '#6eb5ff', '#6ac1ff', '#65d2e4',
+        '#5de3c3', '#52f89d', '#94f863', '#c7f442', '#fbe848', '#ffd33e', '#ffac5c', '#ff7e77', '#f173c1', '#db78fb',
+        '#c5a0fa', '#978ef9', '#8aa0fc', '#87adf9', '#84bafc', '#7fcbe4', '#79dcd3', '#6ef593', '#adff63', '#e2ff4b'
+      ]
       let colors = []
-      if (seriesData.length < contrastColors.length) {
-        colors = contrastColors // 动态生成颜色
+      if (groupedList.length < contrastColors.length) {
+        colors = contrastColors // 使用颜色列表
       } else {
         colors = this.generateRandomColors(seriesData.length)
       }
@@ -242,6 +213,25 @@ export default {
   //   }
   // },
   methods: {
+    allSelect () {
+      console.log(this.selectedTab)
+      this.selectedTab = this.groupedList.reduce((acc, item) => {
+        acc[item] = true
+        return acc
+      }, {})
+      console.log(this.selectedTab)
+      // this.options.legend.selected = this.selectedTab
+      this.$set(this.options.legend, 'selected', this.selectedTab)
+    },
+    clearSelect () {
+      console.log(this.selectedTab)
+      this.selectedTab = this.groupedList.reduce((acc, item) => {
+        acc[item] = false
+        return acc
+      }, {})
+      console.log(this.selectedTab)
+      this.options.legend = Object.assign({}, this.options.legend, { selected: this.selectedTab })
+    },
     generateRandomColors (count) {
       const colors = []
       for (let i = 0; i < count; i++) {
@@ -254,7 +244,7 @@ export default {
     fullScreenLoading (loadingBool) {
       const loading = this.$loading({
         lock: true,
-        text: 'Loading',
+        text: '趁着加载，不妨眺望一下窗外~',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
@@ -288,14 +278,39 @@ export default {
             console.log(response.data)
             this.cols = response.data[0]
             this.rows = response.data[1]
-            this.groupedList = response.data[2]
+
+            const groupedList = response.data[2]
+            this.groupedList = groupedList.sort((a, b) => {
+              const dateA = a.split('-')[1]
+              const dateB = b.split('-')[1]
+
+              if (dateA !== dateB) {
+                return dateA.localeCompare(dateB)
+              }
+
+              const numA = parseInt(a.split('-')[2])
+              const numB = parseInt(b.split('-')[2])
+
+              return numA - numB
+            })
+            this.selectedTab = this.groupedList
           }
           this.fullScreenLoading(false)
           this.showCharts()
         })
         .catch(error => {
           // 在这里处理异步操作失败时的错误
+          this.fullScreenLoading(false)
           console.error('Error:', error)
+          this.$alert('当前请求异常，请上报异常！ (' + error + ')', '请知晓', {
+            confirmButtonText: '我已知晓',
+            callback: action => {
+              this.$message({
+                type: 'error',
+                message: `错误消息: ${error}`
+              })
+            }
+          })
         })
     },
     //  展示折线图
@@ -306,6 +321,9 @@ export default {
       // myChart.setOption()
 
       myChart.setOption(this.options, true)
+      window.addEventListener('resize', function () {
+        myChart.resize()
+      })
       myChart.on('legendselectchanged', function (event) {
         // event.name 是被点击图例的名称
         // event.selected 是所有图例的选中状态
