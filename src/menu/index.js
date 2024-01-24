@@ -21,11 +21,11 @@ export const menuHeader = supplementPath([
     title: '首页',
     iconSvg: 'shouye'
   },
-  {
-    path: '/graph',
-    title: '图线分析',
-    iconSvg: 'tuxingfenxi'
-  },
+  // {
+  //   path: '/graph',
+  //   title: '图线分析',
+  //   iconSvg: 'tuxingfenxi'
+  // },
   {
     path: '/graph_v2',
     title: '图线分析V2',
@@ -51,14 +51,14 @@ export const menuAside = supplementPath([
     title: '首页',
     iconSvg: 'shouye'
   },
-  {
-    path: '/graph',
-    title: '图线分析',
-    iconSvg: 'tuxingfenxi'
-  },
+  // {
+  //   path: '/graph',
+  //   title: '图线分析',
+  //   iconSvg: 'tuxingfenxi'
+  // },
   {
     path: '/graph_v2',
-    title: '图线分析 sV2',
+    title: '图线分析 V2',
     iconSvg: 'tuxingfenxi'
   }
   // ,

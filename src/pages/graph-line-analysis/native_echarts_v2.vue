@@ -13,7 +13,10 @@
             v-model="start_date"
             type="date"
             format="yyyy-MM-dd"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            @change='handleChange'
+            :picker-options="selectStartDate">
+            >
           </el-date-picker>
         </div>
         <div class="block">
@@ -22,7 +25,8 @@
             v-model="end_date"
             type="date"
             format="yyyy-MM-dd"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            :picker-options="selectEndDate">
           </el-date-picker>
         </div>
         <div class="block">
@@ -47,14 +51,26 @@ export default {
   data () {
     return {
       formatter: '{value}',
-      start_date: '2023-11-01',
-      end_date: '2024-01-17',
-      base_date: '2024-01-08',
+      start_date: '2024-01-02',
+      end_date: '2024-01-18',
+      base_date: '2024-01-02',
       cols: [],
       rows: [],
       groupedList: [],
       default_show: {},
-      selectedTab: []
+      selectedTab: [],
+      selectStartDate: {
+        disabledDate (time) {
+          // 禁用 2023-01-01 之前的日期，包括当天
+          const startDate = new Date('2023-01-02')
+          return time.getTime() < startDate.getTime()
+        }
+      },
+      selectEndDate: {
+        disabledDate (time) {
+          return time.getTime() > Date.now()
+        }
+      } // 设置结束日期为今天
     }
   },
   // mounted () {
@@ -136,14 +152,66 @@ export default {
             seriesData.forEach((line, index) => {
               // console.log(line)
               // console.log(dataIndex)
+              // if(line.name == )
               const todayPrice = line.day_index[dataIndex]
+
+              // 正则匹配
+              const pattern = /^(000|399)/
+              let priceChangePercentage
+              let qjPriceChangePercentage
+              let dotStyle
+              const isCommonIndex = pattern.test(line.name) // false
+              if (isCommonIndex) {
+                // 悬停日实际价格
+                const todayRealPrice = line.day_real_price[dataIndex]
+                // console.log(todayRealPrice)
+                // 指数当日收盘价
+                const basePriceIndex = line.base_price_index
+                // 当日涨幅
+                priceChangePercentage = line.day_ratio[dataIndex]
+                // 根据悬停现价计算昨收价
+                // 计算区间涨跌幅
+                // 基准日期在悬停之后
+                // 如果基准日期在悬停日期后，则 基准日 - 悬停日前一日价格
+                if (basePriceIndex > dataIndex) {
+                  // 基准日价格
+                  // console.log('basePriceIndex:' + basePriceIndex)
+                  const basePrice = line.day_real_price[basePriceIndex]
+                  // 悬停日前日价格
+                  // const prevPrice = todayRealPrice / (1 + (priceChangePercentage / 100))
+                  const prevPrice = line.day_real_price[dataIndex - 1]
+                  // if (line.name === '000852.SH-中证1000') {
+                  //   console.log('=========准日期在悬停日期后======= ')
+                  //   console.log('basePrice:' + basePrice)
+                  //   console.log('prevPrice:' + prevPrice)
+                  // }
+                  qjPriceChangePercentage = (basePrice - prevPrice) / prevPrice * 100
+                } else if (basePriceIndex < dataIndex) {
+                  // 如果基准日期在悬停日期前，则 悬停实际价格 - 基准价格前一天价格
+                  // 基准日价格
+                  // 悬停日前日价格
+                  const basePrice = line.day_real_price[basePriceIndex - 1]
+                  // if (line.name === '000852.SH-中证1000') {
+                  //   console.log('=========如果基准日期在悬停日期前======= ')
+                  //   console.log('todayRealPrice:' + todayRealPrice)
+                  //   console.log('basePrice:' + basePrice)
+                  // }
+                  qjPriceChangePercentage = (todayRealPrice - basePrice) / basePrice * 100
+                } else {
+                  qjPriceChangePercentage = line.day_ratio[dataIndex]
+                }
+                // console.log(qjPriceChangePercentage)
+                dotStyle = `style="display:inline-block;width:10px;height:10px;border-radius:10%;background-color:${colors[index]};margin-right:5px;"`
+              } else {
+                priceChangePercentage = line.day_ratio[dataIndex]
+                qjPriceChangePercentage = ((todayPrice - 1000) / 1000 * 100)
+                dotStyle = `style="display:inline-block;width:10px;height:10px;border-radius:50%;background-color:${colors[index]};margin-right:5px;"`
+              }
               // const yesterdayPrice = dataIndex > 0 ? line.data[dataIndex - 1] : todayPrice
-              const priceChangePercentage = line.day_ratio[dataIndex]
-              const qjPriceChangePercentage = ((todayPrice - 1000) / 1000 * 100).toFixed(2)
-              const dotStyle = `style="display:inline-block;width:10px;height:10px;border-radius:50%;background-color:${colors[index]};margin-right:5px;"`
+
               // if (todayPrice != null && legendSelected[line.name] !== false) {
-              if (todayPrice != null) {
-                tooltipContent += `<div><span ${dotStyle}></span> &nbsp;&nbsp;&nbsp;&nbsp;指数名称：${line.name}&nbsp;&nbsp;&nbsp;&nbsp;指数点：${todayPrice.toFixed(2)}&nbsp;&nbsp;&nbsp;&nbsp;涨跌幅：${priceChangePercentage.toFixed(2)}% \t区间涨跌幅：${qjPriceChangePercentage}%</div>`
+              if (todayPrice != null && priceChangePercentage != null && qjPriceChangePercentage != null) {
+                tooltipContent += `<div><span ${dotStyle}></span> &nbsp;&nbsp;&nbsp;&nbsp;指数名称：${line.name}&nbsp;&nbsp;&nbsp;&nbsp;指数点：${todayPrice.toFixed(2)}&nbsp;&nbsp;&nbsp;&nbsp;涨跌幅：${priceChangePercentage.toFixed(2)}% \t区间涨跌幅：${qjPriceChangePercentage.toFixed(2)}%</div>`
               }
             })
 
@@ -213,23 +281,26 @@ export default {
   //   }
   // },
   methods: {
+    handleChange () {
+      this.base_date = this.start_date
+    },
     allSelect () {
-      console.log(this.selectedTab)
+      // console.log(this.selectedTab)
       this.selectedTab = this.groupedList.reduce((acc, item) => {
         acc[item] = true
         return acc
       }, {})
-      console.log(this.selectedTab)
+      // console.log(this.selectedTab)
       // this.options.legend.selected = this.selectedTab
       this.$set(this.options.legend, 'selected', this.selectedTab)
     },
     clearSelect () {
-      console.log(this.selectedTab)
+      // console.log(this.selectedTab)
       this.selectedTab = this.groupedList.reduce((acc, item) => {
         acc[item] = false
         return acc
       }, {})
-      console.log(this.selectedTab)
+      // console.log(this.selectedTab)
       this.options.legend = Object.assign({}, this.options.legend, { selected: this.selectedTab })
     },
     generateRandomColors (count) {
@@ -275,7 +346,7 @@ export default {
           // 在这里处理异步操作成功后的响应
           // console.log('Response data:', response.data)
           if (response.code === 200) {
-            console.log(response.data)
+            // console.log(response.data)
             this.cols = response.data[0]
             this.rows = response.data[1]
 
@@ -327,8 +398,8 @@ export default {
       myChart.on('legendselectchanged', function (event) {
         // event.name 是被点击图例的名称
         // event.selected 是所有图例的选中状态
-        console.log('Clicked legend: ' + event.name)
-        console.log('Selected legends: ', event.selected)
+        // console.log('Clicked legend: ' + event.name)
+        // console.log('Selected legends: ', event.selected)
         this.selectedTab = event.selected
       })
     }
